@@ -1,0 +1,9 @@
+[user]
+	name = Matthew Willson
+	email = matthew@swiftkey.net
+[color]
+	ui = true
+[branch]
+	autosetuprebase = always
+[push]
+	default = current
