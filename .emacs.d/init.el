@@ -12,7 +12,8 @@
   (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(starter-kit starter-kit-lisp clojure-mode nrepl)
+(defvar my-packages '(starter-kit starter-kit-lisp clojure-mode nrepl ac-nrepl clojure-project-mode 
+clojure-test-mode rainbow-delimiters)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
