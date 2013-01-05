@@ -137,6 +137,11 @@ clojure-test-mode rainbow-delimiters)
                                    ; is pretty useless and easy to
                                    ; trigger by accident
 
+;; Allow right alt key to be used for alt on OS X -- e.g.
+;; to enter special characters -- rather than act as META.
+(setq mac-option-key-is-meta t)
+(setq mac-right-option-modifier nil)
+
 (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
 
                                         ; Stop the error buffer from popping up while working in the REPL buffer:
