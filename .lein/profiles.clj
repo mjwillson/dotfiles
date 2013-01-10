@@ -18,6 +18,11 @@
          (set! *print-level* 5)
          (use 'clojure.stacktrace)
          (use 'clojure.pprint)
+         (require 'clojure.reflect)
+         (defn java-methods [x]
+           (sort (map :name
+                (filter #(contains? (:flags %) :public)
+                        (:members (clojure.reflect/reflect x))))))
       )
       :timeout 90000
     }
@@ -27,5 +32,3 @@
                        new (ns-resolve (doto 'clj-stacktrace.repl require)
                                        'pst)]
                    (alter-var-root orig (constantly @new)))]}}
-  }
-}
