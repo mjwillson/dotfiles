@@ -134,6 +134,10 @@
 (add-hook 'nrepl-mode-hook 'nrepl-turn-on-eldoc-mode)
 (add-hook 'nrepl-mode-hook 'paredit-mode)
 
+;; nrepl's bindings for these clash with paredit:
+(define-key nrepl-mode-map (kbd "M-P") 'nrepl-previous-matching-input)
+(define-key nrepl-mode-map (kbd "M-N") 'nrepl-next-matching-input)
+
 (require 'rainbow-delimiters)
 (add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
