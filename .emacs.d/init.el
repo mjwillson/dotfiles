@@ -36,6 +36,9 @@
 (setq shift-select-mode t)
 (global-auto-revert-mode t)
 
+;; This is nice to enable for modes which don't already have it:
+(global-set-key "\C-m" 'newline-and-indent)
+
 ;; http://emacs.wordpress.com/2007/01/22/killing-yanking-and-copying-lines/
 (setq kill-whole-line t)
 (defadvice yank (after indent-region activate)
@@ -400,4 +403,21 @@
 
 ;; Java
 
-(add-hook 'java-mode-hook (lambda () (setq c-basic-offset 2)))
+;; java-mode is defined here:
+(require 'cc-mode)
+
+;; sudo apt-get install openjdk-6-source
+
+
+(add-hook 'java-mode-hook (lambda ()
+                            (setq c-basic-offset 2
+                                  tab-width 2
+                                  indent-tabs-mode nil)))
+
+;; Have this work as in clojure mode
+(define-key java-mode-map (kbd "M-q") 'c-indent-defun)
+
+;; Start
+;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Emacs-Server.html
+;; to allow $EDITOR to open file in existing emacs process
+(server-start)
