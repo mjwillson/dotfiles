@@ -7,3 +7,5 @@
 	autosetuprebase = always
 [push]
 	default = current
+[diff]
+	renames = true
