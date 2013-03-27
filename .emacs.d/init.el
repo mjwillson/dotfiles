@@ -231,6 +231,25 @@
 ;; forward delete
 (define-key paredit-mode-map (kbd "M-S-<delete>") 'paredit-forward-kill-word)
 
+;; Some clojure-mode extras
+;; indent some of my fn-style macros properly:
+(put-clojure-indent 'score-fn 'defun)
+(put-clojure-indent 'scoring-model 'defun)
+
+;; nrepl helper -- clears all non-core bindings from a namespace.
+;; useful prior to C-c C-k if new ns form clashes with old
+(defun nrepl-clear-ns (ns)
+  "Clear the namespace of the current clojure buffer of all maps and aliases"
+  (interactive (list (nrepl-find-ns)))
+  (with-current-buffer nrepl-nrepl-buffer
+    (nrepl-send-string
+     (format "((fn clear [ns]
+  (doseq [[sym _] (ns-aliases ns)]
+         (ns-unalias ns sym))
+  (doseq [[sym v] (ns-refers ns)]
+         (when-not (.startsWith (str (.ns v)) \"clojure\")
+                   (ns-unmap ns sym)))) (find-ns '%s))" ns)
+     (nrepl-handler (current-buffer)))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -419,5 +438,7 @@
 
 ;; Start
 ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Emacs-Server.html
-;; to allow $EDITOR to open file in existing emacs process
+;; to allow $EDITOR to open file in existing emacs process.
+;;
+;; Use M-x # to finish editing a buffer and return it to emacsclient
 (server-start)
