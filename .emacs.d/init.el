@@ -235,6 +235,20 @@
 ;; indent some of my fn-style macros properly:
 (put-clojure-indent 'score-fn 'defun)
 (put-clojure-indent 'scoring-model 'defun)
+(put-clojure-indent 'score-fn-transformer 'defun)
+(put-clojure-indent 'dopar 'defun)
+(put-clojure-indent 'do-iterator 'defun)
+(put-clojure-indent 'doseq-until 'defun)
+(put-clojure-indent 'for-template 'defun)
+;; compojure
+(put-clojure-indent 'let-routes 'defun)
+(put-clojure-indent 'context 2)
+(put-clojure-indent 'GET 2)
+(put-clojure-indent 'POST 2)
+(put-clojure-indent 'PUT 2)
+(put-clojure-indent 'DELETE 2)
+(put-clojure-indent 'PATCH 2)
+(put-clojure-indent 'ANY 2)
 
 ;; nrepl helper -- clears all non-core bindings from a namespace.
 ;; useful prior to C-c C-k if new ns form clashes with old
