@@ -1,10 +1,14 @@
 ;; Packages
 
 (require 'package)
+
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+
+;; marmalade seems to be down, slows things a lot!
+;;(add-to-list 'package-archives
+;;             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+
 (package-initialize)
 
 ;; (when (not package-archive-contents)
@@ -12,12 +16,19 @@
 
 ;; Add in your own as you wish:
 (defvar my-packages '(starter-kit starter-kit-lisp clojure-mode nrepl ac-nrepl clojure-project-mode
-                                  clojure-test-mode rainbow-delimiters)
+                                  clojure-test-mode rainbow-delimiters) ;; python-mode
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
     (package-install p)))
+
+;; for now python-mode is in site_lisp, since marmalade was down had
+;; to manually install.
+;; we need python-mode.el-6.1.3, earlier versions have some madenning bugs
+(add-to-list 'load-path "~/.emacs.d/site_lisp/python-mode.el-6.1.3/")
+(setq py-install-directory "~/.emacs.d/site_lisp/python-mode.el-6.1.3/")
+
 
 (require 'clojure-project-mode)
 
@@ -249,6 +260,8 @@
 (put-clojure-indent 'DELETE 2)
 (put-clojure-indent 'PATCH 2)
 (put-clojure-indent 'ANY 2)
+;; general
+(put-clojure-indent 'into 1)
 
 ;; nrepl helper -- clears all non-core bindings from a namespace.
 ;; useful prior to C-c C-k if new ns form clashes with old
@@ -441,11 +454,12 @@
 
 ;; sudo apt-get install openjdk-6-source
 
-
-(add-hook 'java-mode-hook (lambda ()
-                            (setq c-basic-offset 2
-                                  tab-width 2
-                                  indent-tabs-mode nil)))
+;; applies for c, c++, java etc
+(add-hook 'c-mode-common-hook (lambda ()
+                                (setq c-basic-offset 2
+                                      c-default-style "stroustrup"
+                                      tab-width 2
+                                      indent-tabs-mode nil)))
 
 ;; Have this work as in clojure mode
 (define-key java-mode-map (kbd "M-q") 'c-indent-defun)
@@ -456,3 +470,17 @@
 ;;
 ;; Use M-x # to finish editing a buffer and return it to emacsclient
 (server-start)
+
+;; Python
+
+;; I'm trying to get python-mode.el to work, seems a bunch of people
+;; are going back to python.el and some other plugins assume it. but
+;; it's not quite as featureful.
+(require 'python-mode)
+;; needs to be setq-default since it's a buffer-local variable:
+(setq-default py-shell-name "ipython")
+;; ipython isn't very readable against white background without this:
+(setq-default py-python-command-args '("--colors" "LightBG"))
+;; despite this package being deprecated it's the best / only one I've
+;; found which plays nice with python-mode.el:
+(add-hook 'python-mode-hook 'virtualenv-minor-mode)
