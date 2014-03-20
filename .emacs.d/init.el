@@ -5,8 +5,7 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-;; marmalade seems to be down, slows things a lot!
-;;(add-to-list 'package-archives
+;; (add-to-list 'package-archives
 ;;             '("marmalade" . "http://marmalade-repo.org/packages/") t)
 
 (package-initialize)
@@ -16,19 +15,12 @@
 
 ;; Add in your own as you wish:
 (defvar my-packages '(starter-kit starter-kit-lisp clojure-mode nrepl ac-nrepl clojure-project-mode
-                                  clojure-test-mode rainbow-delimiters) ;; python-mode
+                                  clojure-test-mode rainbow-delimiters)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
     (package-install p)))
-
-;; for now python-mode is in site_lisp, since marmalade was down had
-;; to manually install.
-;; we need python-mode.el-6.1.3, earlier versions have some madenning bugs
-(add-to-list 'load-path "~/.emacs.d/site_lisp/python-mode.el-6.1.3/")
-(setq py-install-directory "~/.emacs.d/site_lisp/python-mode.el-6.1.3/")
-
 
 (require 'clojure-project-mode)
 
@@ -251,6 +243,7 @@
 (put-clojure-indent 'do-iterator 'defun)
 (put-clojure-indent 'doseq-until 'defun)
 (put-clojure-indent 'for-template 'defun)
+(put-clojure-indent 'map-token-stream 2)
 ;; compojure
 (put-clojure-indent 'let-routes 'defun)
 (put-clojure-indent 'context 2)
@@ -473,14 +466,36 @@
 
 ;; Python
 
-;; I'm trying to get python-mode.el to work, seems a bunch of people
-;; are going back to python.el and some other plugins assume it. but
-;; it's not quite as featureful.
-(require 'python-mode)
-;; needs to be setq-default since it's a buffer-local variable:
-(setq-default py-shell-name "ipython")
-;; ipython isn't very readable against white background without this:
-(setq-default py-python-command-args '("--colors" "LightBG"))
-;; despite this package being deprecated it's the best / only one I've
-;; found which plays nice with python-mode.el:
+;; this is the built-in emacs python.el, not python-mode.el which is
+;; another project and seems a bit buggy at the mo if slightly more ambitious.
+(require 'python)
+
+;; Jedi auto-completion
+
+;;(require 'jedi)
+;;(add-hook 'python-mode-hook 'jedi:setup)
+;;(setq jedi:setup-keys t)                      ; optional
+;;(setq jedi:complete-on-dot t)
+
+;; flymake-python setup
+
+;; (require 'flymake-python-pyflakes)
+;; (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
+;; (global-set-key [f10] 'flymake-goto-prev-error)
+;; (global-set-key [f11] 'flymake-goto-next-error)
+
+;; Setting up python.el
+
+(setq
+ python-shell-interpreter "ipython"
+ python-shell-interpreter-args "--colors LightBG"
+ python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+ python-shell-completion-setup-code
+ "from IPython.core.completerlib import module_completion"
+ python-shell-completion-module-string-code
+ "';'.join(module_completion('''%s'''))\n"
+ python-shell-completion-string-code
+ "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+
 (add-hook 'python-mode-hook 'virtualenv-minor-mode)
