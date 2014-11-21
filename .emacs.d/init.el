@@ -14,15 +14,12 @@
 ;;   (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(starter-kit starter-kit-lisp clojure-mode nrepl ac-nrepl clojure-project-mode
-                                  clojure-test-mode rainbow-delimiters)
+(defvar my-packages '(starter-kit starter-kit-lisp clojure-mode rainbow-delimiters cider company)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
     (package-install p)))
-
-(require 'clojure-project-mode)
 
 ;; org-mode
 (require 'org-install)
@@ -124,63 +121,44 @@
                                         ; is pretty useless and easy to
                                         ; trigger by accident
 
-;; nrepl config
-
-(require 'nrepl)
-(require 'ac-nrepl)
-;; workaround for https://github.com/kingtim/nrepl.el/issues/168
-(setq nrepl-connected-hook (reverse nrepl-connected-hook))
-
 ;; Allow right alt key to be used for alt on OS X -- e.g.
 ;; to enter special characters -- rather than act as META.
 (setq mac-option-key-is-meta t)
 (setq mac-right-option-modifier nil)
 
-(add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
-(add-hook 'nrepl-mode-hook 'nrepl-turn-on-eldoc-mode)
-(add-hook 'nrepl-mode-hook 'paredit-mode)
+;; cider/nrepl config
 
-;; nrepl's bindings for these clash with paredit:
-(define-key nrepl-mode-map (kbd "M-P") 'nrepl-previous-matching-input)
-(define-key nrepl-mode-map (kbd "M-N") 'nrepl-next-matching-input)
+(require 'cider)
 
+(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+(setq nrepl-log-messages t)
+(setq nrepl-hide-special-buffers t)
+(setq cider-stacktrace-default-filters nil)
+
+;; ensures that ~/bin/lein, /usr/local/hadoop/bin etc are on the
+;; path for the tramp remote shell used to open a repl:
+(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+(setq nrepl-force-ssh-for-remote-hosts t)
+
+(add-hook 'cider-repl-mode-hook 'paredit-mode)
+(add-hook 'cider-repl-mode-hook 'subword-mode)
 (require 'rainbow-delimiters)
-(add-hook 'nrepl-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
 
+;; Stop the error buffer from popping up while working in the REPL
+;; buffer:
+(setq cider-show-error-buffer 'except-in-repl)
+;;(setq cider-auto-select-error-buffer nil)
 
-;; Stop the error buffer from popping up while working in the REPL buffer:
-(setq nrepl-popup-stacktraces nil)
-
-;; Make C-c C-z switch to the *nrepl* buffer in the current window:
-(add-to-list 'same-window-buffer-names "*nrepl*")
-
-;; auto-complete and ac-nrepl config
-
-(add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
-(add-hook 'nrepl-mode-hook 'auto-complete-mode)
-(add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
-(add-hook 'nrepl-interaction-mode-hook 'auto-complete-mode)
-
-(eval-after-load "auto-complete"
-  '(progn (add-to-list 'ac-modes 'nrepl-mode 'nrepl-interaction-mode)
-          ;; http://cx4a.org/software/auto-complete/manual.html
-          (setq ac-auto-start t)
-          (setq ac-auto-show-menu t)))
 
 ;; this turns off emacs annoying 'completion list' buffer
 (setq completion-auto-help nil)
 
-;; Not really sure what this added:
-;; (defun set-auto-complete-as-completion-at-point-function ()
-;;   (setq completion-at-point-functions '(auto-complete)))
-;; (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+;; this is the recommended autocomplete plugin for cider, enabling it
+;; everywhere apparently should just work
+(global-company-mode)
 
-;; (add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
-;; (add-hook 'nrepl-interaction-mode-hook 'set-auto-complete-as-completion-at-point-function)
-
-
-;;(global-set-key [delete] 'my-delete)
 
 (require 'paredit)
 
@@ -236,14 +214,6 @@
 
 ;; Some clojure-mode extras
 ;; indent some of my fn-style macros properly:
-(put-clojure-indent 'score-fn 'defun)
-(put-clojure-indent 'scoring-model 'defun)
-(put-clojure-indent 'score-fn-transformer 'defun)
-(put-clojure-indent 'dopar 'defun)
-(put-clojure-indent 'do-iterator 'defun)
-(put-clojure-indent 'doseq-until 'defun)
-(put-clojure-indent 'for-template 'defun)
-(put-clojure-indent 'map-token-stream 2)
 ;; compojure
 (put-clojure-indent 'let-routes 'defun)
 (put-clojure-indent 'context 2)
@@ -255,28 +225,6 @@
 (put-clojure-indent 'ANY 2)
 ;; general
 (put-clojure-indent 'into 1)
-
-;; nrepl helper -- clears all non-core bindings from a namespace.
-;; useful prior to C-c C-k if new ns form clashes with old
-(defun nrepl-clear-ns (ns)
-  "Clear the namespace of the current clojure buffer of all maps and aliases"
-  (interactive (list (nrepl-find-ns)))
-  (with-current-buffer nrepl-nrepl-buffer
-    (nrepl-send-string
-     (format "((fn clear [ns]
-  (doseq [[sym _] (ns-aliases ns)]
-         (ns-unalias ns sym))
-  (doseq [[sym v] (ns-refers ns)]
-         (when-not (.startsWith (str (.ns v)) \"clojure\")
-                   (ns-unmap ns sym)))) (find-ns '%s))" ns)
-     (nrepl-handler (current-buffer)))))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 ;; http://stackoverflow.com/questions/1884301/prevent-emacs-switch-to-buffer-other-window-from-resizing-other-window
 (setq even-window-heights nil)
@@ -499,3 +447,6 @@
  "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
 (add-hook 'python-mode-hook 'virtualenv-minor-mode)
+(put 'erase-buffer 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
