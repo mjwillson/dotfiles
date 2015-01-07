@@ -1,6 +1,6 @@
 [user]
 	name = Matthew Willson
-	email = matthew@swiftkey.net
+	email = matthew@swiftkey.com
 [color]
 	ui = true
 [branch]
@@ -11,5 +11,6 @@
 	renames = true
 [alias]
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+        dic = diff --cached
 [core]
 	excludesfile = /home/matthew/.gitignore
