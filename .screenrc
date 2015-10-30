@@ -1,2 +1,12 @@
 # CTRL-Space
 escape ^@@
+
+# Make scroll wheel work
+# http://stackoverflow.com/questions/359109/using-the-scrollwheel-in-gnu-screen
+termcapinfo xterm* ti@:te@
+
+# Set xterm terminal title work
+termcapinfo xterm* 'hs:ts=\E]0;:fs=\007:ds=\E]0;\007'
+defhstatus "screen ^E (^Et) | $USER@^EH"
+hardstatus off
+
