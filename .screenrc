@@ -10,9 +10,24 @@ termcapinfo xterm* 'hs:ts=\E]0;:fs=\007:ds=\E]0;\007'
 defhstatus "screen ^E (^Et) | $USER@^EH"
 hardstatus off
 
-# Make PageUp / Down work.
+# No "New screen..." message at startup
+startup_message off
+
+# No flow control when you accidentally press C-s
+defflow off
+
+# Case insensitive searches in copy mode
+ignorecase on
+
+# Longer scroll history
+defscrollback 32768
+
+# Make Alt-PageUp / Down scroll the screen terminal.
+# (Leaving plain PageUp/Down as some tools like less, nano etc use them;
+# and Shift-PageUp/Down are used by gnome-terminal)
+#
 # Note scrolling this way will go into copy mode; you need to hit q to exit.
 #
-bindkey "^[[5~" eval "copy" "stuff ^u"
-bindkey -m "^[[5~" stuff ^u
-bindkey -m "^[[6~" stuff ^d
+bindkey "^[[5;3~" eval "copy" "stuff ^u"
+bindkey -m "^[[5;3~" stuff ^u
+bindkey -m "^[[6;3~" stuff ^d
