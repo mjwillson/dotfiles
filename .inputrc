@@ -1,4 +1,8 @@
+"\e[1;5C": forward-word   # ctrl + right
+"\e[1;5D": backward-word  # ctrl + left 
+
 "\e[A": history-search-backward
 "\e[B": history-search-forward
+
 set show-all-if-ambiguous on
 set completion-ignore-case on

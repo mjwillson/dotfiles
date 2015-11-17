@@ -10,3 +10,9 @@ termcapinfo xterm* 'hs:ts=\E]0;:fs=\007:ds=\E]0;\007'
 defhstatus "screen ^E (^Et) | $USER@^EH"
 hardstatus off
 
+# Make PageUp / Down work.
+# Note scrolling this way will go into copy mode; you need to hit q to exit.
+#
+bindkey "^[[5~" eval "copy" "stuff ^u"
+bindkey -m "^[[5~" stuff ^u
+bindkey -m "^[[6~" stuff ^d
