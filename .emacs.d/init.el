@@ -404,6 +404,12 @@
                                       tab-width 2
                                       indent-tabs-mode nil)))
 
+(add-hook 'c++-mode-hook (lambda ()
+                                (setq c-basic-offset 4
+                                      c-default-style "linux"
+                                      tab-width 4
+                                      indent-tabs-mode nil)))
+
 ;; Have this work as in clojure mode
 (define-key java-mode-map (kbd "M-q") 'c-indent-defun)
 
