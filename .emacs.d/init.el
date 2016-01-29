@@ -426,35 +426,17 @@
 ;; another project and seems a bit buggy at the mo if slightly more ambitious.
 (require 'python)
 
-;; Jedi auto-completion
+;; Show non-PEP8 whitespace
+(require 'whitespace)
+(setq whitespace-line-column 79)
+(setq whitespace-style '(face lines-tail tabs trailing empty))
+(add-hook 'python-mode-hook 'whitespace-mode)
 
-;;(require 'jedi)
-;;(add-hook 'python-mode-hook 'jedi:setup)
-;;(setq jedi:setup-keys t)                      ; optional
-;;(setq jedi:complete-on-dot t)
+;; Turn on flycheck globally (but particularly to get flake8 checking
+;; for python)
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
-;; flymake-python setup
-
-;; (require 'flymake-python-pyflakes)
-;; (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
-;; (global-set-key [f10] 'flymake-goto-prev-error)
-;; (global-set-key [f11] 'flymake-goto-next-error)
-
-;; Setting up python.el
-
-(setq
- python-shell-interpreter "ipython"
- python-shell-interpreter-args "--colors LightBG"
- python-shell-prompt-regexp "In \\[[0-9]+\\]: "
- python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
- python-shell-completion-setup-code
- "from IPython.core.completerlib import module_completion"
- python-shell-completion-module-string-code
- "';'.join(module_completion('''%s'''))\n"
- python-shell-completion-string-code
- "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
-
-(add-hook 'python-mode-hook 'virtualenv-minor-mode)
+;;(add-hook 'python-mode-hook 'virtualenv-minor-mode)
 (put 'erase-buffer 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
