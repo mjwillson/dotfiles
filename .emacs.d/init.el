@@ -10,11 +10,13 @@
 
 (package-initialize)
 
-;; (when (not package-archive-contents)
-;;   (package-refresh-contents))
+(when (not package-archive-contents)
+   (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(starter-kit starter-kit-lisp clojure-mode rainbow-delimiters cider company)
+(defvar my-packages '(
+  starter-kit starter-kit-lisp
+  clojure-mode rainbow-delimiters cider company paredit flycheck)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
