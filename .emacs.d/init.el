@@ -14,8 +14,9 @@
    (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(
-  clojure-mode rainbow-delimiters cider company paredit flycheck)
+(defvar my-packages
+  '(clojure-mode rainbow-delimiters cider company paredit flycheck
+		 idle-highlight-mode smex)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -30,17 +31,33 @@
 (setq org-log-done t)
 (setq org-agenda-files (list "~/.emacs.d/org/todo.org"))
 
+;; some things starter-kit did that I missed
 (menu-bar-mode -1)
 (tool-bar-mode -1)
+(show-paren-mode 1)
+
+(require 'idle-highlight-mode)
+(add-hook 'python-mode-hook 'idle-highlight-mode)
+(add-hook 'c-mode-common-hook 'idle-highlight-mode)
+(add-hook 'clojure-mode-hook 'idle-highlight-mode)
+
 
 (set-face-attribute 'default nil :font "Monaco-11")
 
 (setq shift-select-mode t)
 (global-auto-revert-mode t)
 
+
 ;; Nice interactive completion in various places
+
 (require 'ido)
 (ido-mode t)
+(require 'smex)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;; This is your old M-x.
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+
 
 ;; This is nice to enable for modes which don't already have it:
 (global-set-key "\C-m" 'newline-and-indent)
