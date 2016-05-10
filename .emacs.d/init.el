@@ -15,7 +15,6 @@
 
 ;; Add in your own as you wish:
 (defvar my-packages '(
-  starter-kit starter-kit-lisp
   clojure-mode rainbow-delimiters cider company paredit flycheck)
   "A list of packages to ensure are installed at launch.")
 
@@ -31,12 +30,17 @@
 (setq org-log-done t)
 (setq org-agenda-files (list "~/.emacs.d/org/todo.org"))
 
-(menu-bar-mode 1)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
 
-(set-face-attribute 'default nil :font "Monaco-10")
+(set-face-attribute 'default nil :font "Monaco-11")
 
 (setq shift-select-mode t)
 (global-auto-revert-mode t)
+
+;; Nice interactive completion in various places
+(require 'ido)
+(ido-mode t)
 
 ;; This is nice to enable for modes which don't already have it:
 (global-set-key "\C-m" 'newline-and-indent)
