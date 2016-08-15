@@ -50,8 +50,20 @@
 (setq shift-select-mode t)
 (global-auto-revert-mode t)
 
-;; when running in xterm
+;; when running in xterm (possibly via screen)
 (xterm-mouse-mode)
+(define-key input-decode-map "\e[1;2A" [(shift up)])
+(define-key input-decode-map "\e[1;2B" [(shift down)])
+(define-key input-decode-map "\e[1;2C" [(shift right)])
+(define-key input-decode-map "\e[1;2D" [(shift left)])
+(define-key input-decode-map "\e[1;3A" [(meta up)])
+(define-key input-decode-map "\e[1;3B" [(meta down)])
+(define-key input-decode-map "\e[1;3C" [(meta right)])
+(define-key input-decode-map "\e[1;3D" [(meta left)])
+(define-key input-decode-map "\e[1;5A" [(control up)])
+(define-key input-decode-map "\e[1;5B" [(control down)])
+(define-key input-decode-map "\e[1;5C" [(control right)])
+(define-key input-decode-map "\e[1;5D" [(control left)])
 
 ;; Nice interactive completion in various places
 
