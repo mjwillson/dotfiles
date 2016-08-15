@@ -3,7 +3,7 @@
 (require 'package)
 
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://melpa.org/packages/") t)
 
 ;; (add-to-list 'package-archives
 ;;             '("marmalade" . "http://marmalade-repo.org/packages/") t)
@@ -32,8 +32,11 @@
 (setq org-agenda-files (list "~/.emacs.d/org/todo.org"))
 
 ;; some things starter-kit did that I missed
+
 (menu-bar-mode -1)
-(tool-bar-mode -1)
+;; only defined in Xemacs:
+(if (fboundp 'tool-bar-mode)
+    (tool-bar-mode -1))
 (show-paren-mode 1)
 
 (require 'idle-highlight-mode)
