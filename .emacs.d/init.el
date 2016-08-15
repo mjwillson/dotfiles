@@ -50,6 +50,8 @@
 (setq shift-select-mode t)
 (global-auto-revert-mode t)
 
+;; when running in xterm
+(xterm-mouse-mode)
 
 ;; Nice interactive completion in various places
 
